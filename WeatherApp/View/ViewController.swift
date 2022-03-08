@@ -45,7 +45,7 @@ class ViewController: UIViewController {
             let value = jsonData["Key"].stringValue
             let cityV = jsonData["LocalizedName"].stringValue
             self.city.text = cityV
-            print("value:" + value)
+            //print("value:" + value)
             return json(.get,URL.hourlyForecasts(key: value))
         }).observe(on: MainScheduler.instance).subscribe{ [unowned self] in
             if let data = $0.element {
@@ -56,6 +56,21 @@ class ViewController: UIViewController {
             }
         }.disposed(by: disposeBag)
     }
+    
+    //MARK:
+        func parseForecasts (keyName: String){
+            let url = URL.hourlyForecasts(key: keyName)
+            RxAlamofire.json(.get,url).observe(on: MainScheduler.instance).subscribe({ [unowned self] in
+              //  let data = $0["Temperature"]["Value"].stringValue
+                if let data = $0.element {
+                   let jsonData = JSON(data)
+                    let tempV = jsonData[0]["Temperature"]["Value"].stringValue
+                    let iconP = jsonData[0]["IconPhrase"].stringValue
+                    self.doSomething(iconPharse: iconP,temp: tempV)
+                }
+            }).disposed(by: disposeBag)
+            
+         }
 
     func doSomething(iconPharse: String,temp: String){
         self.iconPhrase.text = iconPharse

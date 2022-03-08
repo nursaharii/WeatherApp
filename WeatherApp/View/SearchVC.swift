@@ -6,7 +6,10 @@
 //
 
 import UIKit
-import Alamofire
+import RxAlamofire
+import RxSwift
+import RxCocoa
+import SwiftyJSON
 
 class SearchVC: UITableViewController {
     var key = String()
@@ -15,7 +18,7 @@ class SearchVC: UITableViewController {
     var cities : [CityDetail] = []
     var filteredCities: [CityDetail] = []
     var selectedItem : CityDetail?
-   
+   var disposeBag = DisposeBag()
     @IBOutlet weak var searchBar: UISearchBar!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,14 +47,21 @@ class SearchVC: UITableViewController {
         
     }
     
-    func citybyNameParse(url : String) {
-        AF.request(url).validate().responseDecodable(of: CitybyName.self) { response in
-            guard let cities = response.value else {return}
-            self.key = cities.key
-            self.cities = cities.cityDetail
-            self.filteredCities = cities.cityDetail
-            self.tableView.reloadData()
-        }
+    func citybyNameParse(city : String) {
+        RxAlamofire.json(.get,URL.weatherCityUrl(city: city)).observe(on: MainScheduler.instance).subscribe({ [unowned self] in
+            if let data = $0.element {
+                let jsonData = JSON(data)
+                let keyV = jsonData[0]["Key"].stringValue
+                let cityV = jsonData[0]["AdministrativeArea"]["LocalizedName"].stringValue
+                getData(key: keyV,city: cityV)
+                
+            }
+        }).disposed(by: disposeBag)
+    }
+    
+    func getData(key: String,city: String) {
+        self.cityName = city
+        self.key = key
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toMainVC" {
@@ -82,7 +92,7 @@ class SearchVC: UITableViewController {
 extension SearchVC : UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         self.lowerSearch = searchBar.text!.lowercased()
-        citybyNameParse(url: URL.weatherCityUrl(city: lowerSearch))
+        citybyNameParse(city: self.lowerSearch)
         self.search()
         
     }
