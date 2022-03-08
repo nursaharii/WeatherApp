@@ -23,10 +23,10 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Tempature" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iUf-eB-g7S">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Temp" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iUf-eB-g7S">
                                 <rect key="frame" x="13" y="226" width="374" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="35"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="31"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -46,12 +46,14 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <navigationItem key="navigationItem" id="daJ-Bw-Jys"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <splitViewMasterSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <connections>
                         <outlet property="city" destination="6z0-ap-2Pe" id="YWf-Cq-0ED"/>
                         <outlet property="icon" destination="fgW-pw-e2J" id="S8W-le-PFD"/>
                         <outlet property="iconPhrase" destination="Mi2-As-jNR" id="B9P-t7-Hwr"/>
                         <outlet property="temp" destination="iUf-eB-g7S" id="icm-Es-maX"/>
-                        <segue destination="Mn5-oC-Hcg" kind="showDetail" identifier="toSearchVC" id="S4r-xJ-kBS"/>
+                        <segue destination="BcZ-2u-T47" kind="show" identifier="toSearchVC" id="S4r-xJ-kBS"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -61,12 +63,12 @@
         <!--SearchVC-->
         <scene sceneID="h1b-By-njI">
             <objects>
-                <tableViewController id="Mn5-oC-Hcg" customClass="SearchVC" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController interfaceStyle="light" id="Mn5-oC-Hcg" customClass="SearchVC" customModule="WeatherApp" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="VVV-zu-4er">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <searchBar key="tableHeaderView" contentMode="redraw" showsCancelButton="YES" id="MRa-3d-Dn4">
+                        <searchBar key="tableHeaderView" contentMode="redraw" placeholder="Aramak istediğiniz şehri yazınız." showsSearchResultsButton="YES" showsCancelButton="YES" id="MRa-3d-Dn4">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="51"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <textInputTraits key="textInputTraits"/>
@@ -76,12 +78,21 @@
                             </scopeButtonTitles>
                         </searchBar>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="vi8-xA-hzA">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="R7b-TL-GHj" style="IBUITableViewCellStyleDefault" id="vi8-xA-hzA">
                                 <rect key="frame" x="0.0" y="95.5" width="414" height="43.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="vi8-xA-hzA" id="THd-kZ-Ai3">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="R7b-TL-GHj">
+                                            <rect key="frame" x="20" y="0.0" width="374" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="0.0"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
                                 </tableViewCellContentView>
                             </tableViewCell>
                         </prototypes>
@@ -91,20 +102,22 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="brb-1r-WBk"/>
+                    <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <connections>
                         <outlet property="searchBar" destination="MRa-3d-Dn4" id="evj-JQ-tb6"/>
-                        <segue destination="BYZ-38-t0r" kind="presentation" identifier="toMain" modalPresentationStyle="fullScreen" id="LIQ-vi-ZgG"/>
+                        <segue destination="BYZ-38-t0r" kind="presentation" identifier="toMainVC" modalPresentationStyle="fullScreen" id="oHT-Lj-aaQ"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8Oz-8S-JIQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1790" y="117"/>
+            <point key="canvasLocation" x="2700" y="116.51785714285714"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="LWx-gG-1QP">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="5Bu-Cb-k5s" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <navigationItem key="navigationItem" id="xj1-OE-5hL"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="epq-ic-nxn">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -118,10 +131,31 @@
             </objects>
             <point key="canvasLocation" x="131.8840579710145" y="116.51785714285714"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Fxv-xM-x7g">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="BcZ-2u-T47" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="zV9-ut-Ghm"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="pTZ-fA-FDc">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="5ss-AI-aFF">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="Mn5-oC-Hcg" kind="relationship" relationship="rootViewController" id="FIf-4c-OIS"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5zq-Wj-jic" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1789.8550724637682" y="116.51785714285714"/>
+        </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="S4r-xJ-kBS"/>
-        <segue reference="LIQ-vi-ZgG"/>
+        <segue reference="oHT-Lj-aaQ"/>
     </inferredMetricsTieBreakers>
     <resources>
         <systemColor name="systemBackgroundColor">

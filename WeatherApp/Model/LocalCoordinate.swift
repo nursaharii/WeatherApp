@@ -9,12 +9,10 @@ import Foundation
 
 struct LocalCoordinate: Decodable {
     let key: String
-    let country: Country
     let city: City
 
     enum CodingKeys: String, CodingKey {
         case key = "Key"
-        case country = "Country"
         case city = "AdministrativeArea"
     }
 }
@@ -29,11 +27,3 @@ struct City: Decodable {
     }
 }
 
-// MARK: - Country
-struct Country: Decodable {
-    let localizedName: String
-
-    enum CodingKeys: String, CodingKey {
-        case localizedName = "LocalizedName"
-    }
-}

@@ -7,19 +7,17 @@
 
 import Foundation
 
-struct CitybyName: Codable {
-    let key: String
-    let country:CountryDetail, cityDetail: CityDetail
+struct CitybyName: Decodable {
+    let key: String, cityDetail: [CityDetail]
 
     enum CodingKeys: String, CodingKey {
         case key = "Key"
-        case country = "Country"
         case cityDetail = "AdministrativeArea"
     }
 }
 
 // MARK: - AdministrativeArea
-struct CityDetail: Codable {
+struct CityDetail: Decodable {
     let id, localizedName, englishName: String
 
     enum CodingKeys: String, CodingKey {
@@ -29,6 +27,3 @@ struct CityDetail: Codable {
     }
 }
 
-struct CountryDetail : Codable {
-    let localizedName, englishName: String
-}

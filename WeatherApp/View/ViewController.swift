@@ -6,9 +6,11 @@
 //
 
 import UIKit
-import Alamofire
 import CoreLocation
 import RxSwift
+import RxCocoa
+import RxAlamofire
+import SwiftyJSON
 
 class ViewController: UIViewController {
     @IBOutlet weak var icon: UIImageView!
@@ -16,58 +18,56 @@ class ViewController: UIViewController {
     @IBOutlet weak var temp: UILabel!
     @IBOutlet weak var city: UILabel!
     let locationManager = CLLocationManager()
-    var url = URL(string: "")
-    var lat = String()
-    var lon = String()
-    var Cities = [LocalCoordinate]()
-    var key = String()
-    var County = [HourlyForecasts]()
-    let disposeBag = DisposeBag()
     
+    var lat = String() ; var cityName = String() ;  var lon = String() ;  var keyName = String()
+    var Cities = [LocalCoordinate]()
+    var County = [HourlyForecasts]()
+    var disposeBag = DisposeBag()
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        //print("test"+lat)
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(search))
-        print(lat)
         locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
-        
-            
+        //parseForecasts(keyName: keyName)
     }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+   /* override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toSearchVC" {
                     let destinationVC = segue.destination as! SearchVC
                 }
-    }
+    }*/
     
+    func parse (lat:String,lon: String) {
+        _ = json(.get,URL.localCoordinateUrl(lat: lat, lon: lon)).flatMap({ data -> Observable<Any> in
+            let jsonData = JSON(data)
+            let value = jsonData["Key"].stringValue
+            let cityV = jsonData["LocalizedName"].stringValue
+            self.city.text = cityV
+            print("value:" + value)
+            return json(.get,URL.hourlyForecasts(key: value))
+        }).observe(on: MainScheduler.instance).subscribe{ [unowned self] in
+            if let data = $0.element {
+                let jsonData = JSON(data)
+                let tempV = jsonData[0]["Temperature"]["Value"].stringValue
+                let iconP = jsonData[0]["IconPhrase"].stringValue
+                self.doSomething(iconPharse: iconP,temp: tempV)
+            }
+        }.disposed(by: disposeBag)
+    }
 
-    
-   func parseLocation (url:URL) {
-        AF.request(url).validate().responseDecodable(of: LocalCoordinate.self) { response in
-            guard let cities = response.value else {return}
-            self.city.text = cities.city.localizedName
-            self.key = cities.key
-            self.parseForecasts(url: URL.hourlyForecasts(city: self.key)!)
-            
-        }
+    func doSomething(iconPharse: String,temp: String){
+        self.iconPhrase.text = iconPharse
+        self.temp.text = "\(temp) F°"
     }
-    
-   func parseForecasts (url: URL){
-        AF.request(url).validate().responseDecodable(of: HourlyForecasts.self) { response in
-            guard let forecasts = response.value else {return}
-            
-        }
-        
-    }
-    
+  
    
-    
     @objc func search() {
-        
+        lat = ""
+        lon = ""
         performSegue(withIdentifier: "toSearchVC", sender: nil)
+        
     }
     
 }
@@ -81,7 +81,8 @@ extension ViewController: CLLocationManagerDelegate {
         self.lat = String(location.latitude)
         self.lon = String(location.longitude)
         if !lat.isEmpty && !lon.isEmpty {
-            parseLocation(url: URL.localCoordinateUrl(lat: self.lat, lon: self.lon)!)
+           //parseLocation(url: URL.localCoordinateUrl(lat: self.lat, lon: self.lon)!)
+            parse(lat: lat,lon: lon)
         }
        // self.url = URL.localCoordinateUrl(lat: latitudeString, lon: longitudeString)
         
