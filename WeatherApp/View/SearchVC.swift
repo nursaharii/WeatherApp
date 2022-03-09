@@ -10,15 +10,19 @@ import RxAlamofire
 import RxSwift
 import RxCocoa
 import SwiftyJSON
+import JGProgressHUD
 
 class SearchVC: UITableViewController {
     var key = String()
     var cityName = String()
     var lowerSearch = String()
-    var cities : [CityDetail] = []
-    var filteredCities: [CityDetail] = []
-    var selectedItem : CityDetail?
-   var disposeBag = DisposeBag()
+    var cities : [String] = []
+    var filteredCities: [String] = []
+    var selectedItem = String()
+    var disposeBag = DisposeBag()
+    var dictionary = 
+    let storedName = UserDefaults.standard.object(forKey: "city")
+    let storedKey = UserDefaults.standard.object(forKey: "key")
     @IBOutlet weak var searchBar: UISearchBar!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,7 +40,7 @@ class SearchVC: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell",for: indexPath)
         var content = cell.defaultContentConfiguration()
         let city = filteredCities[indexPath.row]
-        content.text = city.localizedName
+        content.text = city
         cell.contentConfiguration = content
         return cell
     }
@@ -48,6 +52,9 @@ class SearchVC: UITableViewController {
     }
     
     func citybyNameParse(city : String) {
+        let hud = JGProgressHUD(style: .dark)
+                hud.textLabel.text = "Loading"
+                hud.show(in: self.view)
         RxAlamofire.json(.get,URL.weatherCityUrl(city: city)).observe(on: MainScheduler.instance).subscribe({ [unowned self] in
             if let data = $0.element {
                 let jsonData = JSON(data)
@@ -56,13 +63,17 @@ class SearchVC: UITableViewController {
                 getData(key: keyV,city: cityV)
                 
             }
-        }).disposed(by: disposeBag)
+        })
+        hud.dismiss()
     }
     
     func getData(key: String,city: String) {
         self.cityName = city
         self.key = key
+        filteredCities.append(city)
+        tableView.reloadData()
     }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toMainVC" {
             let destinatonVC = segue.destination as! ViewController
@@ -70,13 +81,14 @@ class SearchVC: UITableViewController {
             destinatonVC.cityName = lowerSearch
         }
     }
+    
     func search() {
         if lowerSearch.isEmpty {
             filteredCities = cities
             return
         }
         filteredCities = cities.filter({ city in
-            if let _ = city.localizedName.lowercased().range(of: searchBar.text!, options: .caseInsensitive) {
+            if let _ = city.lowercased().range(of: searchBar.text!, options: .caseInsensitive) {
                 return true
             }
             return false
